@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,8 +26,10 @@ SECRET_KEY = 'django-insecure-b=6!!^f%g7!+9%n+4wt5m))=u_85tc0dh7^n#*@ea+%(@^#qol
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+#ALLOWED_HOSTS = []
+#descpmentaar---------------------------------------
+ALLOWED_HOSTS = ['134.122.125.35', '127.0.0.1', 'localhost']
+DOMAIN = '134.122.125.35'
 
 # Application definition
 '''
@@ -47,12 +50,19 @@ INSTALLED_APPS = [
     'drf_generators',
     'drf_yasg',
     'knox',
+    "corsheaders",
+    "django_filters",
+    'bulk_update_or_create',
+    'django_rest_passwordreset',
+
     
 ]
+LOGIN_REDIRECT_URL = 'molApp/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -80,8 +90,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Mol.wsgi.application'
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',)
+    ,
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated',],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 15
+    'PAGE_SIZE': 10,
+     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
 # Database
@@ -90,10 +104,10 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'Molecules0',
+        'NAME': 'molecules0',
         'HOST' : '127.0.0.1',
-        'USER' : 'postgres',
-        'PASSWORD' : 'yeimyhs',
+        'USER' : 'lonccos',
+        'PASSWORD' : 'sistemas',
         'PORT' : '5432',    
     }
 }
@@ -131,15 +145,43 @@ USE_L10N = True
 
 USE_TZ = True
 
+CORS_ALLOWED_ORIGINS = [
+    "https://134.122.125.35",
+    "http://localhost:3000",
+    "http://localhost:8001",
+    "http://127.0.0.1:9000",
+]
+
+CORS_ORIGIN_WHITELIST = [
+    "https://134.122.125.35",
+    "http://localhost:3000",
+    "http://localhost:8001",
+    "http://127.0.0.1:9000",
+]
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'Mol/static'),
+]
+MEDIA_URL = '/media/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #AUTH_USER_MODEL = "MolApp.UserP"
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp-mail.outlook.com'
+EMAIL_FILE_PATH = str(BASE_DIR.joinpath('sent_emails'))
+EMAIL_USE_TLS = True
+#EMAIL_USE_SSL = False
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'pruebascor@outlook.es'
+#pruebas2021diverticuentos@gmail.com'
+EMAIL_HOST_PASSWORD ='pruebas2022cor'
